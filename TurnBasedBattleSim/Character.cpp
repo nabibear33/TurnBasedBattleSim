@@ -1,17 +1,15 @@
-class Character
+#include "Character.h"
+#include <algorithm>
+
+Character::Character(int hp_, int attackPower_) : hp(hp_), attackPower(attackPower_) {}
+Character::~Character() {}
+
+void Character::TakeDamage(int dmg)
 {
-public:
-private:
-	int hp;
-	int attackPower;
+	hp = std::max(hp - dmg, 0);
+}
 
-	void TakeDamage()
-	{
-
-	}
-
-	bool IsDead()
-	{
-
-	}
-};
+bool Character::IsDead()
+{
+	return hp <= 0;
+}
