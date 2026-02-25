@@ -6,40 +6,30 @@
 #include "Skill.h"
 
 
-enum class Action
-{
-	ATTACK = 1
-};
-
-
 int main()
 {
 	std::cout << "Turn-based Battle Simulation\n\n";
 
-	Player player(100, 10);
-	Monster monster(50, 5);
+	Player player(100, 100, 10);
+	Monster monster(50, 50, 5);
 
 	int turn = 0;
 	while (true)
 	{
 		std::cout << "Turn " << turn << "\n";
 		std::cout << "Your Current HP: " << player.GetHp() << ", Monster Current HP: " << monster.GetHp() << "\n";
-		std::cout << "Choose Action\n";
-		std::cout << "1. Attack\n";
-		std::cout << "Your Action: ";
+		std::cout << "Choose Your Skill\n";
+		std::cout << "1. Basic Attack   2. Fireball   3. Heal\n";
+		std::cout << "Activated Skill: ";
 
-		int action_raw;
-		std::cin >> action_raw;
-		Action action = static_cast<Action>(action_raw);
+		int choiceSkillRaw;
+		std::cin >> choiceSkillRaw;
+		SkillIdx choiceSkill = static_cast<SkillIdx>(choiceSkillRaw - 1);
 
 		std::cout << "\n";
 
-		switch (action)
-		{
-		case Action::ATTACK:
-			monster.TakeDamage(player.GetAttackPower());
-			break;
-		}
+		// player attacks first
+		player.ActivateSkill(choiceSkill, player, monster);
 
 		if (monster.IsDead())
 		{
@@ -47,7 +37,8 @@ int main()
 			break;
 		}
 
-		player.TakeDamage(monster.GetAttackPower());
+		// monster attack is always basic attack
+		monster.ActivateSkill(SkillIdx::BASIC_ATTACK, monster, player);
 
 		if (player.IsDead())
 		{

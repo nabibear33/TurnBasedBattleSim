@@ -1,7 +1,7 @@
 #include "Character.h"
 #include <algorithm>
 
-Character::Character(int hp_, int attackPower_) : hp(hp_), attackPower(attackPower_) {}
+Character::Character(int maxHp_, int hp_, int attackPower_) : maxHp(maxHp_), hp(hp_), attackPower(attackPower_) {}
 Character::~Character() {}
 
 int Character::GetHp()
@@ -19,6 +19,13 @@ void Character::TakeDamage(int dmg)
 {
 	hp = std::max(hp - dmg, 0);
 }
+
+
+void Character::GetHeal(int amt)
+{
+	hp = std::min(hp + amt, maxHp);
+}
+
 
 bool Character::IsDead()
 {
