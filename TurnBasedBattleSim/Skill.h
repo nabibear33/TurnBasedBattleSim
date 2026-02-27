@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "Types.h"
+
 class Character;
 
 
@@ -9,7 +11,7 @@ class Skill
 {
 private:
 public:
-	virtual void Activate(Character& user, Character& target) = 0;
+	virtual SkillInfo Activate(Character& user, Character& target) = 0;
 	virtual ~Skill() = default;
 	virtual std::string GetName() const = 0;
 };
@@ -18,7 +20,7 @@ public:
 class BasicAttack : public Skill
 {
 public:
-	void Activate(Character& user, Character& target) override;
+	SkillInfo Activate(Character& user, Character& target) override;
 	std::string GetName() const override;
 };
 
@@ -26,7 +28,7 @@ public:
 class FireBall : public Skill
 {
 public:
-	void Activate(Character& user, Character& target) override;
+	SkillInfo Activate(Character& user, Character& target) override;
 	std::string GetName() const override;
 };
 
@@ -34,7 +36,7 @@ public:
 class Heal : public Skill
 {
 public:
-	void Activate(Character& user, Character& target) override;
+	SkillInfo Activate(Character& user, Character& target) override;
 	std::string GetName() const override;
 };
 
@@ -42,7 +44,7 @@ public:
 class PoisonArrow : public Skill
 {
 public:
-	void Activate(Character& user, Character& target) override;
+	SkillInfo Activate(Character& user, Character& target) override;
 	std::string GetName() const override;
 };
 
@@ -50,6 +52,6 @@ public:
 class StunningArrow : public Skill
 {
 public:
-	void Activate(Character& user, Character& target) override;
+	SkillInfo Activate(Character& user, Character& target) override;
 	std::string GetName() const override;
 };

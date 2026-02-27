@@ -129,6 +129,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Skill.cpp" />
     <ClCompile Include="StatusEffect.cpp" />
+    <ClCompile Include="Ui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Character.h" />
@@ -136,6 +137,8 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Skill.h" />
     <ClInclude Include="StatusEffect.h" />
+    <ClInclude Include="Types.h" />
+    <ClInclude Include="Ui.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="training_guide.md" />

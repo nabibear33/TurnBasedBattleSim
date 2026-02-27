@@ -3,9 +3,19 @@
 #include "StatusEffect.h"
 
 
-void BasicAttack::Activate(Character& user, Character& target)
+SkillInfo BasicAttack::Activate(Character& user, Character& target)
 {
-	target.TakeDamage(user.GetAttackPower());
+	int amount = user.GetAttackPower();
+
+	target.TakeDamage(amount);
+
+	SkillInfo skillInfo;
+	skillInfo.type = SkillType::DAMAGE;
+	skillInfo.skillName = this->GetName();
+	skillInfo.casterName = user.GetName();
+	skillInfo.targetName = target.GetName();
+	skillInfo.value = amount;
+	return skillInfo;
 }
 
 
@@ -15,10 +25,20 @@ std::string BasicAttack::GetName() const
 }
 
 
-void FireBall::Activate(Character& user, Character& target)
+SkillInfo FireBall::Activate(Character& user, Character& target)
 {
-	target.TakeDamage(2 * user.GetAttackPower());
-	target.AddStatusEffect(std::make_unique<Burn>());
+	int amount = 2 * user.GetAttackPower();
+	
+	target.TakeDamage(amount);
+	target.AddStatusEffect(std::make_unique<Burn>(2));
+	
+	SkillInfo skillInfo;
+	skillInfo.type = SkillType::DAMAGE;
+	skillInfo.skillName = this->GetName();
+	skillInfo.casterName = user.GetName();
+	skillInfo.targetName = target.GetName();
+	skillInfo.value = amount;
+	return skillInfo;
 }
 
 
@@ -28,9 +48,19 @@ std::string FireBall::GetName() const
 }
 
 
-void Heal::Activate(Character& user, Character& target)
+SkillInfo Heal::Activate(Character& user, Character& target)
 {
-	user.RestoreHp(user.GetAttackPower());
+	int amount = user.GetAttackPower();
+
+	user.RestoreHp(amount);
+
+	SkillInfo skillInfo;
+	skillInfo.type = SkillType::HEAL;
+	skillInfo.skillName = this->GetName();
+	skillInfo.casterName = user.GetName();
+	skillInfo.targetName = user.GetName();
+	skillInfo.value = amount;
+	return skillInfo;
 }
 
 
@@ -40,10 +70,20 @@ std::string Heal::GetName() const
 }
 
 
-void PoisonArrow::Activate(Character& user, Character& target)
+SkillInfo PoisonArrow::Activate(Character& user, Character& target)
 {
-	target.TakeDamage(user.GetAttackPower());
-	target.AddStatusEffect(std::make_unique<Poison>());
+	int amount = user.GetAttackPower();
+
+	target.TakeDamage(amount);
+	target.AddStatusEffect(std::make_unique<Poison>(3));
+
+	SkillInfo skillInfo;
+	skillInfo.type = SkillType::DAMAGE;
+	skillInfo.skillName = this->GetName();
+	skillInfo.casterName = user.GetName();
+	skillInfo.targetName = target.GetName();
+	skillInfo.value = amount;
+	return skillInfo;
 }
 
 
@@ -53,10 +93,21 @@ std::string PoisonArrow::GetName() const
 }
 
 
-void StunningArrow::Activate(Character& user, Character& target)
+SkillInfo StunningArrow::Activate(Character& user, Character& target)
 {
-	target.TakeDamage(user.GetAttackPower());
-	target.AddStatusEffect(std::make_unique<Stun>());
+	int amount = user.GetAttackPower();
+
+	target.TakeDamage(amount);
+	target.AddStatusEffect(std::make_unique<Stun>(1));
+	target.SetIsStunned(true);
+
+	SkillInfo skillInfo;
+	skillInfo.type = SkillType::DAMAGE;
+	skillInfo.skillName = this->GetName();
+	skillInfo.casterName = user.GetName();
+	skillInfo.targetName = target.GetName();
+	skillInfo.value = amount;
+	return skillInfo;
 }
 
 

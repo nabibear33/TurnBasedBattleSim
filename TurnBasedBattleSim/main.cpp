@@ -5,6 +5,7 @@
 #include "Monster.h"
 #include "Player.h"
 #include "Skill.h"
+#include "Ui.h"
 
 
 enum class ActionIdx
@@ -18,18 +19,25 @@ int main()
 {
 	std::cout << "Turn-based Battle Simulation\n\n";
 
-	Player player(100, 100, 10);
-	Monster monster(50, 50, 5);
+	Ui ui;
+	Player player("플레이어", 100, 5);
+	Monster monster("몬스터1", 100, 5);
 
-	int turn = 0;
+	int turn = 1;
 	while (true)
 	{
-		std::cout << "Turn " << turn << "\n";
+		std::cout << "---------------- Turn " << turn << " ----------------" << "\n";
 
-		player.StatusEffectOnTurnStart();
-		monster.StatusEffectOnTurnStart();
+		player.UpdateStatusEffects();
+		monster.UpdateStatusEffects();
 
-		std::cout << "Your Current HP: " << player.GetHp() << ", Monster Current HP: " << monster.GetHp() << "\n";
+		std::cout << "Your Status: ";
+		ui.PrintStatusEffects(player);
+		std::cout << "Monster Status: ";
+		ui.PrintStatusEffects(monster);
+		std::cout << "\n";
+
+		std::cout << "Your Current HP: " << player.GetHp() << ", Monster Current HP: " << monster.GetHp() << "\n\n";
 		std::cout << "Choose Your Action\n";
 		std::cout << "1. Use Skill   2. Learn Skill\n";
 		std::cout << "Your Action: ";
@@ -38,28 +46,41 @@ int main()
 		std::cin >> choiceActionRaw;
 		ActionIdx choiceAction = static_cast<ActionIdx>(choiceActionRaw);
 		
-		int choiceSkill;
-		switch(choiceAction)
+		std::cout << "\n";
+
+		if (!player.GetIsStunned())
 		{
-		case ActionIdx::LEARN_SKILL:
-			std::cout << "Choose Skill which you will learn\n";
-			player.PrintAvailableSkills();
-			std::cout << "Take Skill: ";
+			int choiceSkill;
+			switch(choiceAction)
+			{
+			case ActionIdx::LEARN_SKILL:
+				std::cout << "Choose Skill which you will learn\n";
+				ui.PrintAvailableSkills(player);
+				std::cout << "Take Skill: ";
 
-			std::cin >> choiceSkill;
-			player.LearnSkill(choiceSkill);
+				std::cin >> choiceSkill;
+				player.LearnSkill(choiceSkill);
 
-			break;
+				break;
 
-		case ActionIdx::USE_SKILL:
-			std::cout << "Choose Your Skill\n";
-			player.PrintLearnedSkills();
-			std::cout << "Activated Skill: ";
+			case ActionIdx::USE_SKILL:
+				std::cout << "Choose Your Skill\n";
+				ui.PrintLearnedSkills(player);
+				std::cout << "Activated Skill: ";
 
-			std::cin >> choiceSkill;
-			player.ActivateSkill(choiceSkill, player, monster);
+				std::cin >> choiceSkill;
+				SkillInfo skillInfo = player.ActivateSkill(choiceSkill, player, monster);
 
-			break;
+				std::cout << "\n";
+
+				ui.PrintSkillResult(skillInfo);
+
+				break;
+			}
+		}
+		else
+		{
+			std::cout << "Player Get Stunned... Pass the turn\n";
 		}
 
 
@@ -69,7 +90,19 @@ int main()
 			break;
 		}
 
-		monster.ActivateSkill(0, monster, player);
+		if (!monster.GetIsStunned())
+		{
+			SkillInfo skillInfo = monster.ActivateSkill(0, monster, player);
+
+			std::cout << "\n";
+
+			ui.PrintSkillResult(skillInfo);
+		}
+		else
+		{
+			std::cout << "Monster Get Stunned!\n";
+		}
+
 
 		if (player.IsDead())
 		{
@@ -78,6 +111,7 @@ int main()
 		}
 		
 		turn = turn + 1;
+		std::cout << "\n";
 	}
 	
 	return 0;

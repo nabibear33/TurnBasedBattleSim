@@ -4,7 +4,7 @@
 #include "Character.h"
 
 
-Character::Character(int maxHp_, int hp_, int attackPower_) : maxHp(maxHp_), hp(hp_), attackPower(attackPower_) {}
+Character::Character(std::string name_, int hp_, int attackPower_) : name(name_), maxHp(hp_), hp(hp_), attackPower(attackPower_) {}
 Character::~Character() {}
 
 int Character::GetHp()
@@ -18,6 +18,36 @@ int Character::GetAttackPower()
 }
 
 
+bool Character::GetIsStunned()
+{
+	return isStunned;
+}
+
+
+std::vector<std::unique_ptr<Skill>>& Character::GetLearnedSkills()
+{
+	return learnedSkills;
+}
+
+
+std::vector<std::unique_ptr<Skill>>& Character::GetAvailableSkills()
+{
+	return availableSkills;
+}
+
+
+std::vector<std::unique_ptr<StatusEffect>>& Character::GetStatusEffects()
+{
+	return statusEffects;
+}
+
+
+std::string Character::GetName()
+{
+	return name;
+}
+
+
 void Character::TakeDamage(int dmg)
 {
 	hp = std::max(hp - dmg, 0);
@@ -27,6 +57,12 @@ void Character::TakeDamage(int dmg)
 void Character::RestoreHp(int amt)
 {
 	hp = std::min(hp + amt, maxHp);
+}
+
+
+void Character::SetIsStunned(bool flag)
+{
+	isStunned = flag;
 }
 
 
@@ -43,20 +79,21 @@ bool Character::IsDead()
 }
 
 
-void Character::ActivateSkill(int choice, Character& user, Character& target)
+SkillInfo Character::ActivateSkill(int choice, Character& user, Character& target)
 {
 	Skill* selectedSkill = learnedSkills[choice].get();
-	selectedSkill->Activate(user, target);
+	SkillInfo skillInfo = selectedSkill->Activate(user, target);
+	return skillInfo;
 }
 
 
-void Character::SetAvailableSkills(std::unique_ptr<Skill> skill)
+void Character::AddAvailableSkills(std::unique_ptr<Skill> skill)
 {
 	availableSkills.push_back(std::move(skill));
 }
 
 
-void Character::SetLearnedSkills(std::unique_ptr<Skill> skill)
+void Character::AddLearnedSkills(std::unique_ptr<Skill> skill)
 {
 	learnedSkills.push_back(std::move(skill));
 }
@@ -69,30 +106,27 @@ void Character::AddStatusEffect(std::unique_ptr<StatusEffect> statusEffect)
 }
 
 
-void Character::PrintAvailableSkills()
-{
-	for (int i = 0; i < availableSkills.size(); i++)
-	{
-		std::cout << i << ". " << availableSkills[i]->GetName() << "    ";
-	}
-	std::cout << "\n";
-}
-
-
-void Character::PrintLearnedSkills()
-{
-	for (int i = 0; i < learnedSkills.size(); i++)
-	{
-		std::cout << i << ". " << learnedSkills[i]->GetName() << "    ";
-	}
-	std::cout << "\n";
-}
-
-
-void Character::StatusEffectOnTurnStart()
+void Character::UpdateStatusEffects()
 {
 	for (int i = 0; i < statusEffects.size(); i++)
 	{
 		statusEffects[i]->OnTurnStart(*this);
 	}
+
+	for (auto& effect : statusEffects)
+	{
+		effect->DecrementTurn();
+		if (effect->IsExpired()) {
+			effect->OnExpire(*this);
+		}
+	}
+
+	statusEffects.erase(
+		std::remove_if(
+			statusEffects.begin(),
+			statusEffects.end(),
+			[](const std::unique_ptr<StatusEffect>& e) { return e->IsExpired(); }
+		),
+		statusEffects.end()
+	);
 }

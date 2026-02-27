@@ -9,39 +9,45 @@
 class Character
 {
 private:
+	std::string name;
 	int maxHp;
 	int hp;
 	int attackPower;
+	bool isStunned = false;
 	std::vector<std::unique_ptr<Skill>> learnedSkills;
 	std::vector<std::unique_ptr<Skill>> availableSkills;
 	std::vector<std::unique_ptr<StatusEffect>> statusEffects;
 
 public:
-	Character(int maxHp_, int hp_, int attackPower_);
+	Character(std::string name_, int hp_, int attackPower_);
 	~Character();
 
 	// getter
 	int GetHp();
 	int GetAttackPower();
+	bool GetIsStunned();
+	std::string GetName();
+	std::vector<std::unique_ptr<Skill>>& GetLearnedSkills();
+	std::vector<std::unique_ptr<Skill>>& GetAvailableSkills();
+	std::vector<std::unique_ptr<StatusEffect>>& GetStatusEffects();
 
 	// setter
-	void SetAvailableSkills(std::unique_ptr<Skill> skill);
-	void SetLearnedSkills(std::unique_ptr<Skill> skill);
+	void SetIsStunned(bool flag);
+
+	// vector handling
+	void AddAvailableSkills(std::unique_ptr<Skill> skill);
+	void AddLearnedSkills(std::unique_ptr<Skill> skill);
 	void AddStatusEffect(std::unique_ptr<StatusEffect> statusEffect);
 
-	// change status
+	// update status
 	void TakeDamage(int dmg);
 	void RestoreHp(int amt);
-	void StatusEffectOnTurnStart();
+	void UpdateStatusEffects();
 
 	// get status
 	bool IsDead();
 
 	// skill
 	void LearnSkill(int choice);
-	void ActivateSkill(int choice, Character& user, Character& target);
-
-	// ui
-	void PrintLearnedSkills();
-	void PrintAvailableSkills();
+	SkillInfo ActivateSkill(int choice, Character& user, Character& target);
 };
