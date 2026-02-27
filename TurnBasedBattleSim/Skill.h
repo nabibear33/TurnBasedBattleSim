@@ -1,13 +1,8 @@
 #pragma once
 
-#include "Character.h"
+#include <string>
 
-enum class SkillIdx
-{
-	BASIC_ATTACK = 0,
-	FIREBALL,
-	HEAL
-};
+class Character;
 
 
 class Skill
@@ -16,22 +11,45 @@ private:
 public:
 	virtual void Activate(Character& user, Character& target) = 0;
 	virtual ~Skill() = default;
+	virtual std::string GetName() const = 0;
 };
 
 
 class BasicAttack : public Skill
 {
-	void Activate(Character& user, Character& target);
+public:
+	void Activate(Character& user, Character& target) override;
+	std::string GetName() const override;
 };
 
 
 class FireBall : public Skill
 {
-	void Activate(Character& user, Character& target);
+public:
+	void Activate(Character& user, Character& target) override;
+	std::string GetName() const override;
 };
 
 
 class Heal : public Skill
 {
-	void Activate(Character& user, Character& target);
+public:
+	void Activate(Character& user, Character& target) override;
+	std::string GetName() const override;
+};
+
+
+class PoisonArrow : public Skill
+{
+public:
+	void Activate(Character& user, Character& target) override;
+	std::string GetName() const override;
+};
+
+
+class StunningArrow : public Skill
+{
+public:
+	void Activate(Character& user, Character& target) override;
+	std::string GetName() const override;
 };

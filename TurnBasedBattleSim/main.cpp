@@ -1,9 +1,17 @@
 #include <iostream>
+#include <memory>
 
 #include "Character.h"
 #include "Monster.h"
 #include "Player.h"
 #include "Skill.h"
+
+
+enum class ActionIdx
+{
+	USE_SKILL = 1,
+	LEARN_SKILL
+};
 
 
 int main()
@@ -17,19 +25,43 @@ int main()
 	while (true)
 	{
 		std::cout << "Turn " << turn << "\n";
+
+		player.StatusEffectOnTurnStart();
+		monster.StatusEffectOnTurnStart();
+
 		std::cout << "Your Current HP: " << player.GetHp() << ", Monster Current HP: " << monster.GetHp() << "\n";
-		std::cout << "Choose Your Skill\n";
-		std::cout << "1. Basic Attack   2. Fireball   3. Heal\n";
-		std::cout << "Activated Skill: ";
+		std::cout << "Choose Your Action\n";
+		std::cout << "1. Use Skill   2. Learn Skill\n";
+		std::cout << "Your Action: ";
 
-		int choiceSkillRaw;
-		std::cin >> choiceSkillRaw;
-		SkillIdx choiceSkill = static_cast<SkillIdx>(choiceSkillRaw - 1);
+		int choiceActionRaw;
+		std::cin >> choiceActionRaw;
+		ActionIdx choiceAction = static_cast<ActionIdx>(choiceActionRaw);
+		
+		int choiceSkill;
+		switch(choiceAction)
+		{
+		case ActionIdx::LEARN_SKILL:
+			std::cout << "Choose Skill which you will learn\n";
+			player.PrintAvailableSkills();
+			std::cout << "Take Skill: ";
 
-		std::cout << "\n";
+			std::cin >> choiceSkill;
+			player.LearnSkill(choiceSkill);
 
-		// player attacks first
-		player.ActivateSkill(choiceSkill, player, monster);
+			break;
+
+		case ActionIdx::USE_SKILL:
+			std::cout << "Choose Your Skill\n";
+			player.PrintLearnedSkills();
+			std::cout << "Activated Skill: ";
+
+			std::cin >> choiceSkill;
+			player.ActivateSkill(choiceSkill, player, monster);
+
+			break;
+		}
+
 
 		if (monster.IsDead())
 		{
@@ -37,8 +69,7 @@ int main()
 			break;
 		}
 
-		// monster attack is always basic attack
-		monster.ActivateSkill(SkillIdx::BASIC_ATTACK, monster, player);
+		monster.ActivateSkill(0, monster, player);
 
 		if (player.IsDead())
 		{

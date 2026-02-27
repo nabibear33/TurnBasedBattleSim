@@ -3,23 +3,10 @@
 
 Player::Player(int maxHp_, int hp_, int attackPower_) : Character(maxHp_, hp_, attackPower_)
 {
-	skill_list.push_back(new BasicAttack());
-	skill_list.push_back(new FireBall());
-	skill_list.push_back(new Heal());
-
+	SetLearnedSkills(std::make_unique<BasicAttack>());
+	SetAvailableSkills(std::make_unique<FireBall>());
+	SetAvailableSkills(std::make_unique<Heal>());
+	SetAvailableSkills(std::make_unique<PoisonArrow>());
+	SetAvailableSkills(std::make_unique<StunningArrow>());
 }
-Player::~Player()
-{
-	for (auto s : skill_list)
-	{
-		delete s;
-	}
-}
-
-
-void Player::ActivateSkill(SkillIdx choice, Character& user, Character& target)
-{
-	int idx = static_cast<int>(choice);
-	Skill* selectedSkill = skill_list[idx];
-	selectedSkill->Activate(user, target);
-}
+Player::~Player() {}

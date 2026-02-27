@@ -219,4 +219,4 @@ Only then:
 
 ---
 
-End of Training Plan
+End of Training Plan								
