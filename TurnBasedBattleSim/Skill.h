@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <random>
 
 #include "Types.h"
 
@@ -10,10 +11,13 @@ class Character;
 class Skill
 {
 private:
+	std::random_device rd;
 public:
 	virtual SkillInfo Activate(Character& user, Character& target) = 0;
 	virtual ~Skill() = default;
 	virtual std::string GetName() const = 0;
+	double GetUniformRandomValue(double s, double e);
+	DamageResult CalculateDamage(Character& user, Character& target, int rawDamage);
 };
 
 

@@ -4,7 +4,7 @@
 #include "Character.h"
 
 
-Character::Character(std::string name_, int hp_, int attackPower_) : name(name_), maxHp(hp_), hp(hp_), attackPower(attackPower_) {}
+Character::Character(std::string name_, int hp_, int attackPower_, int defense_, int critical_) : name(name_), maxHp(hp_), hp(hp_), attackPower(attackPower_), defense(defense_), critical(critical_) {}
 Character::~Character() {}
 
 int Character::GetHp()
@@ -24,19 +24,19 @@ bool Character::GetIsStunned()
 }
 
 
-std::vector<std::unique_ptr<Skill>>& Character::GetLearnedSkills()
+const  std::vector<std::unique_ptr<Skill>>& Character::GetLearnedSkills() const
 {
 	return learnedSkills;
 }
 
 
-std::vector<std::unique_ptr<Skill>>& Character::GetAvailableSkills()
+const  std::vector<std::unique_ptr<Skill>>& Character::GetAvailableSkills() const
 {
 	return availableSkills;
 }
 
 
-std::vector<std::unique_ptr<StatusEffect>>& Character::GetStatusEffects()
+const std::vector<std::unique_ptr<StatusEffect>>& Character::GetStatusEffects() const
 {
 	return statusEffects;
 }
@@ -45,6 +45,18 @@ std::vector<std::unique_ptr<StatusEffect>>& Character::GetStatusEffects()
 std::string Character::GetName()
 {
 	return name;
+}
+
+
+const int Character::GetDefense()
+{
+	return defense;
+}
+
+
+const int Character::GetCritical()
+{
+	return critical;
 }
 
 

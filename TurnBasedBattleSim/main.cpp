@@ -20,8 +20,8 @@ int main()
 	std::cout << "Turn-based Battle Simulation\n\n";
 
 	Ui ui;
-	Player player("플레이어", 100, 5);
-	Monster monster("몬스터1", 100, 5);
+	Player player("플레이어", 1000, 100, 10, 50);
+	Monster monster("몬스터1", 1000, 100, 100, 10);
 
 	int turn = 1;
 	while (true)

@@ -13,23 +13,27 @@ private:
 	int maxHp;
 	int hp;
 	int attackPower;
+	int defense;
+	int critical;
 	bool isStunned = false;
 	std::vector<std::unique_ptr<Skill>> learnedSkills;
 	std::vector<std::unique_ptr<Skill>> availableSkills;
 	std::vector<std::unique_ptr<StatusEffect>> statusEffects;
 
 public:
-	Character(std::string name_, int hp_, int attackPower_);
+	Character(std::string name_, int hp_, int attackPower_, int defense_, int critical_);
 	~Character();
 
 	// getter
 	int GetHp();
 	int GetAttackPower();
 	bool GetIsStunned();
+	const int GetDefense();
+	const int GetCritical();
 	std::string GetName();
-	std::vector<std::unique_ptr<Skill>>& GetLearnedSkills();
-	std::vector<std::unique_ptr<Skill>>& GetAvailableSkills();
-	std::vector<std::unique_ptr<StatusEffect>>& GetStatusEffects();
+	const std::vector<std::unique_ptr<Skill>>& GetLearnedSkills() const;
+	const std::vector<std::unique_ptr<Skill>>& GetAvailableSkills() const;
+	const std::vector<std::unique_ptr<StatusEffect>>& GetStatusEffects() const;
 
 	// setter
 	void SetIsStunned(bool flag);

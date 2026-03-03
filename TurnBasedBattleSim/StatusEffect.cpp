@@ -40,7 +40,7 @@ std::string Poison::GetName()
 
 void Poison::Apply(Character& target)
 {
-	std::cout << "Get poisoned.\n";
+	std::cout << target.GetName() << " Get poisoned.\n";
 }
 
 
@@ -61,7 +61,7 @@ std::string Burn::GetName()
 
 void Burn::Apply(Character& target)
 {
-	std::cout << "Get burned.\n";
+	std::cout << target.GetName() << " Get burned.\n";
 }
 
 
@@ -82,7 +82,8 @@ std::string Stun::GetName()
 
 void Stun::Apply(Character& target)
 {
-	std::cout << "Get stunned.\n";
+	target.SetIsStunned(true);
+	std::cout << target.GetName() << " Get stunned.\n";
 }
 
 

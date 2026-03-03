@@ -9,7 +9,7 @@ class Ui
 private:
 public:
 	void PrintSkillResult(const SkillInfo& result);
-	void PrintLearnedSkills(Character& user);
-	void PrintAvailableSkills(Character& user);
-	void PrintStatusEffects(Character& user);
+	void PrintLearnedSkills(const Character& user);
+	void PrintAvailableSkills(const Character& user);
+	void PrintStatusEffects(const Character& user);
 };

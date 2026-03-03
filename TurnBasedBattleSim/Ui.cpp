@@ -9,7 +9,7 @@ void Ui::PrintSkillResult(const SkillInfo& result)
     switch (result.type) {
     case SkillType::DAMAGE:
         std::cout << result.casterName << "이(가) " << result.targetName
-            << "에게 " << result.value << " 데미지!\n";
+			<< "에게 " << result.value << ((result.isCritical) ? " 크리티컬" : "") << " 데미지!\n";
         break;
     case SkillType::HEAL:
         std::cout << result.casterName << "이(가) "
@@ -20,9 +20,9 @@ void Ui::PrintSkillResult(const SkillInfo& result)
 }
 
 
-void Ui::PrintAvailableSkills(Character& user)
+void Ui::PrintAvailableSkills(const Character& user)
 {
-	std::vector<std::unique_ptr<Skill>>& availableSkills = user.GetAvailableSkills();
+	const std::vector<std::unique_ptr<Skill>>& availableSkills = user.GetAvailableSkills();
 	for (int i = 0; i < availableSkills.size(); i++)
 	{
 		std::cout << i << ". " << availableSkills[i]->GetName() << "    ";
@@ -31,9 +31,9 @@ void Ui::PrintAvailableSkills(Character& user)
 }
 
 
-void Ui::PrintLearnedSkills(Character& user)
+void Ui::PrintLearnedSkills(const Character& user)
 {
-	std::vector<std::unique_ptr<Skill>>& learnedSkills = user.GetLearnedSkills();
+	const std::vector<std::unique_ptr<Skill>>& learnedSkills = user.GetLearnedSkills();
 	for (int i = 0; i < learnedSkills.size(); i++)
 	{
 		std::cout << i << ". " << learnedSkills[i]->GetName() << "    ";
@@ -42,9 +42,9 @@ void Ui::PrintLearnedSkills(Character& user)
 }
 
 
-void Ui::PrintStatusEffects(Character& user)
+void Ui::PrintStatusEffects(const Character& user)
 {
-	std::vector<std::unique_ptr<StatusEffect>>& statusEffects = user.GetStatusEffects();
+	const std::vector<std::unique_ptr<StatusEffect>>& statusEffects = user.GetStatusEffects();
 	for (int i = 0; i < statusEffects.size(); i++)
 	{
 		int turns = statusEffects[i]->GetRemainingTurns();

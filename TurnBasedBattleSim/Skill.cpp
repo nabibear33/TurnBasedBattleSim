@@ -3,18 +3,44 @@
 #include "StatusEffect.h"
 
 
+double Skill::GetUniformRandomValue(double s, double e)
+{
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<> dist(s, e);
+	return dist(gen);
+}
+
+
+DamageResult Skill::CalculateDamage(Character& user, Character& target, int rawDamage)
+{
+	const double defense = target.GetDefense();
+	double defenseMultiplier = 100.0 / (100.0 + defense);
+	
+	double critRoll = GetUniformRandomValue(0.0, 1.0);
+	bool isCritical = critRoll < (user.GetCritical() / 100.0);
+	double criticalMultiplier = (isCritical) ? 2.0 : 1.0;
+	
+	double randomMultiplier = GetUniformRandomValue(0.9, 1.1);
+
+	DamageResult damageResult{ static_cast<int>(rawDamage * defenseMultiplier * criticalMultiplier * randomMultiplier), isCritical };
+	return damageResult;
+}
+
+
 SkillInfo BasicAttack::Activate(Character& user, Character& target)
 {
-	int amount = user.GetAttackPower();
+	DamageResult result = CalculateDamage(user, target, user.GetAttackPower());
 
-	target.TakeDamage(amount);
+	target.TakeDamage(result.damage);
 
-	SkillInfo skillInfo;
-	skillInfo.type = SkillType::DAMAGE;
-	skillInfo.skillName = this->GetName();
-	skillInfo.casterName = user.GetName();
-	skillInfo.targetName = target.GetName();
-	skillInfo.value = amount;
+	SkillInfo skillInfo{
+		SkillType::DAMAGE,
+		this->GetName(),
+		user.GetName(),
+		target.GetName(),
+		result.isCritical,
+		result.damage,
+	};
 	return skillInfo;
 }
 
@@ -27,17 +53,19 @@ std::string BasicAttack::GetName() const
 
 SkillInfo FireBall::Activate(Character& user, Character& target)
 {
-	int amount = 2 * user.GetAttackPower();
-	
-	target.TakeDamage(amount);
+	DamageResult result = CalculateDamage(user, target, 2 * user.GetAttackPower());
+
+	target.TakeDamage(result.damage);
 	target.AddStatusEffect(std::make_unique<Burn>(2));
-	
-	SkillInfo skillInfo;
-	skillInfo.type = SkillType::DAMAGE;
-	skillInfo.skillName = this->GetName();
-	skillInfo.casterName = user.GetName();
-	skillInfo.targetName = target.GetName();
-	skillInfo.value = amount;
+
+	SkillInfo skillInfo{
+		SkillType::DAMAGE,
+		this->GetName(),
+		user.GetName(),
+		target.GetName(),
+		result.isCritical,
+		result.damage,
+	};
 	return skillInfo;
 }
 
@@ -54,12 +82,13 @@ SkillInfo Heal::Activate(Character& user, Character& target)
 
 	user.RestoreHp(amount);
 
-	SkillInfo skillInfo;
-	skillInfo.type = SkillType::HEAL;
-	skillInfo.skillName = this->GetName();
-	skillInfo.casterName = user.GetName();
-	skillInfo.targetName = user.GetName();
-	skillInfo.value = amount;
+	SkillInfo skillInfo{
+		SkillType::HEAL,
+		this->GetName(),
+		user.GetName(),
+		user.GetName(),
+		amount
+	};
 	return skillInfo;
 }
 
@@ -72,17 +101,19 @@ std::string Heal::GetName() const
 
 SkillInfo PoisonArrow::Activate(Character& user, Character& target)
 {
-	int amount = user.GetAttackPower();
+	DamageResult result = CalculateDamage(user, target, user.GetAttackPower());
 
-	target.TakeDamage(amount);
+	target.TakeDamage(result.damage);
 	target.AddStatusEffect(std::make_unique<Poison>(3));
 
-	SkillInfo skillInfo;
-	skillInfo.type = SkillType::DAMAGE;
-	skillInfo.skillName = this->GetName();
-	skillInfo.casterName = user.GetName();
-	skillInfo.targetName = target.GetName();
-	skillInfo.value = amount;
+	SkillInfo skillInfo{
+		SkillType::DAMAGE,
+		this->GetName(),
+		user.GetName(),
+		target.GetName(),
+		result.isCritical,
+		result.damage,
+	};
 	return skillInfo;
 }
 
@@ -95,18 +126,19 @@ std::string PoisonArrow::GetName() const
 
 SkillInfo StunningArrow::Activate(Character& user, Character& target)
 {
-	int amount = user.GetAttackPower();
+	DamageResult result = CalculateDamage(user, target, user.GetAttackPower());
 
-	target.TakeDamage(amount);
+	target.TakeDamage(result.damage);
 	target.AddStatusEffect(std::make_unique<Stun>(1));
-	target.SetIsStunned(true);
 
-	SkillInfo skillInfo;
-	skillInfo.type = SkillType::DAMAGE;
-	skillInfo.skillName = this->GetName();
-	skillInfo.casterName = user.GetName();
-	skillInfo.targetName = target.GetName();
-	skillInfo.value = amount;
+	SkillInfo skillInfo{
+		SkillType::DAMAGE,
+		this->GetName(),
+		user.GetName(),
+		target.GetName(),
+		result.isCritical,
+		result.damage,
+	};
 	return skillInfo;
 }
 
